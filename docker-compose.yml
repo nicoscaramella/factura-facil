@@ -1,0 +1,21 @@
+services:
+  # Servicio del Backend (API)
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - AzureWebJobsScriptRoot=/home/site/wwwroot
+      - AzureFunctionsJobHost__Logging__Console__IsEnabled=true
+
+  # Servicio del Frontend (Web + Proxy Nginx)
+  web:
+    build:
+      context: ./FacturaFacil.UI
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "80:80"  # Expone el puerto 80 del VPS al puerto 80 del contenedor
+    depends_on:
+      - api

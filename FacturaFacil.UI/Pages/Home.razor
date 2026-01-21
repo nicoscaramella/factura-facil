@@ -170,10 +170,8 @@
             // Save Seller Info for next time
             await LocalStorage.SetItemAsync("SellerInfo", invoice.Seller);
 
-            // Determine API URL based on environment
-            string apiUrl = HostEnvironment.IsDevelopment() 
-                ? "http://localhost:7100/api/invoices" 
-                : "api/invoices";
+            // Al usar Nginx en el VPS, usamos ruta relativa. Nginx redirige internamente.
+            string apiUrl = "api/invoices";
 
             var response = await Http.PostAsJsonAsync(apiUrl, invoice);
             if (response.IsSuccessStatusCode)
