@@ -1,0 +1,31 @@
+{
+  "InvoiceNumber": 1001,
+  "IssueDate": "2026-01-19T10:00:00Z",
+  "DueDate": "2026-01-26T10:00:00Z",
+  "CaeNumber": "74012345678901",
+  "CaeDueDate": "2026-01-31T10:00:00Z",
+  "Seller": {
+    "Name": "FacturaFacil S.A.",
+    "Address": "Av. Principal 123, CABA",
+    "Email": "contacto@facturafacil.com",
+    "TaxId": "30-12345678-9"
+  },
+  "Buyer": {
+    "Name": "Cliente de Prueba",
+    "Address": "Calle Secundaria 456, Mendoza",
+    "Email": "cliente@prueba.com",
+    "TaxId": "20-98765432-1"
+  },
+  "Item": [
+    {
+      "Description": "Desarrollo de Software",
+      "Quantity": 40,
+      "UnitPrice": 50.0
+    },
+    {
+      "Description": "Mantenimiento Mensual",
+      "Quantity": 1,
+      "UnitPrice": 200.0
+    }
+  ]
+}
