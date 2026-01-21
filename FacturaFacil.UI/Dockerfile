@@ -1,10 +1,19 @@
 # Etapa 1: Compilar Blazor
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
-COPY ["FacturaFacil.UI.csproj", "."]
-COPY ["../FacturaFacil.Core/FacturaFacil.Core.csproj", "../FacturaFacil.Core/"]
-RUN dotnet restore "FacturaFacil.UI.csproj"
+
+# Copiar csproj de UI y Core
+COPY ["FacturaFacil.UI/FacturaFacil.UI.csproj", "FacturaFacil.UI/"]
+COPY ["FacturaFacil.Core/FacturaFacil.Core.csproj", "FacturaFacil.Core/"]
+
+# Restaurar
+RUN dotnet restore "FacturaFacil.UI/FacturaFacil.UI.csproj"
+
+# Copiar todo el código
 COPY . .
+WORKDIR "/src/FacturaFacil.UI"
+
+# Publicar
 RUN dotnet publish "FacturaFacil.UI.csproj" -c Release -o /app/publish
 
 # Etapa 2: Servidor Nginx
@@ -12,5 +21,5 @@ FROM nginx:alpine
 WORKDIR /usr/share/nginx/html
 # Copiar los archivos compilados
 COPY --from=build /app/publish/wwwroot .
-# Copiar nuestra configuración personalizada de Nginx
-COPY nginx.conf /etc/nginx/nginx.conf
+# Copiar configuración de Nginx (ruta ajustada)
+COPY FacturaFacil.UI/nginx.conf /etc/nginx/nginx.conf

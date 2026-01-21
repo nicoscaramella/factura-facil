@@ -12,8 +12,8 @@ services:
   # Servicio del Frontend (Web + Proxy Nginx)
   web:
     build:
-      context: ./FacturaFacil.UI
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: FacturaFacil.UI/Dockerfile
     restart: always
     ports:
       - "80:80"  # Expone el puerto 80 del VPS al puerto 80 del contenedor
