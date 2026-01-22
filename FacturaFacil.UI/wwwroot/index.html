@@ -31,6 +31,26 @@
         <a href="." class="reload">Reload</a>
         <span class="dismiss">🗙</span>
     </div>
+
+    <script>
+        // Global error handler to catch startup issues
+        window.addEventListener('error', function(event) {
+            console.error('Global Error:', event.error);
+            const errorUi = document.getElementById('blazor-error-ui');
+            if (errorUi) {
+                errorUi.style.display = 'block';
+                errorUi.innerText = 'Error de inicio: ' + (event.error?.message || event.message || 'Error desconocido');
+            }
+        });
+        window.addEventListener('unhandledrejection', function(event) {
+            console.error('Unhandled Rejection:', event.reason);
+             const errorUi = document.getElementById('blazor-error-ui');
+            if (errorUi) {
+                errorUi.style.display = 'block';
+                errorUi.innerText = 'Error de promesa: ' + (event.reason?.message || event.reason || 'Rechazo desconocido');
+            }
+        });
+    </script>
     <script type="module">
         import './_framework/blazor.webassembly.js';
     </script>
