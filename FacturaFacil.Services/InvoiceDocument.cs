@@ -1,6 +1,7 @@
 using FacturaFacil.Core;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
+using QuestPDF.Helpers;
 using Net.Codecrete.QrCodeGenerator;
 using System.Text.Json;
 using System.Text;
@@ -71,21 +72,28 @@ public class InvoiceDocument : IDocument
 
             page.Footer().Row(row =>
             {
-                // QR Legal de AFIP a la izquierda
-                row.ConstantItem(100).Column(c =>
+                if (_invoiceRequest.IsAfipEnabled)
                 {
-                    var qrUrl = GenerateAfipQrUrl();
-                    var qr = QrCode.EncodeText(qrUrl, QrCode.Ecc.Medium);
-                    var pngBytes = qr.ToPng(10, 0);
-                    c.Item().Image(pngBytes);
-                });
+                    // QR Legal de AFIP a la izquierda
+                    row.ConstantItem(100).Column(c =>
+                    {
+                        var qrUrl = GenerateAfipQrUrl();
+                        var qr = QrCode.EncodeText(qrUrl, QrCode.Ecc.Medium);
+                        var pngBytes = qr.ToPng(10, 0);
+                        c.Item().Image(pngBytes);
+                    });
 
-                // Datos de CAE a la derecha
-                row.RelativeItem().AlignRight().Column(c =>
+                    // Datos de CAE a la derecha
+                    row.RelativeItem().AlignRight().Column(c =>
+                    {
+                        c.Item().Text($"CAE: {_invoiceRequest.CaeNumber}").Bold();
+                        c.Item().Text($"Vto. CAE: {_invoiceRequest.CaeDueDate:dd/MM/yyyy}");
+                    });
+                }
+                else
                 {
-                    c.Item().Text($"CAE: {_invoiceRequest.CaeNumber}").Bold();
-                    c.Item().Text($"Vto. CAE: {_invoiceRequest.CaeDueDate:dd/MM/yyyy}");
-                });
+                    row.RelativeItem().AlignCenter().Text("DOCUMENTO NO VÁLIDO COMO FACTURA").FontSize(10).FontColor(Colors.Grey.Darken2);
+                }
 
             });
         });
@@ -93,6 +101,8 @@ public class InvoiceDocument : IDocument
 
     private string GetInvoiceLetter()
     {
+        if (!_invoiceRequest.IsAfipEnabled) return "X";
+
         return _invoiceRequest.InvoiceType switch
         {
             1 => "A",

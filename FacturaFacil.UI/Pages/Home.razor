@@ -12,6 +12,9 @@
         <MudItem xs="12" md="6">
             <MudPaper Class="pa-4">
                 <MudText Typo="Typo.h5" GutterBottom="true">Generar Factura</MudText>
+                
+                <MudSwitch @bind-Value="invoice.IsAfipEnabled" Label="@(invoice.IsAfipEnabled ? "Factura Fiscal (AFIP)" : "Presupuesto / No Fiscal")" Color="Color.Success" Class="mb-4" />
+
                 <MudForm @ref="form" @bind-IsValid="@success">
                     <MudGrid>
                         <MudItem xs="4">
@@ -162,8 +165,17 @@
         isGenerating = true;
         invoice.IssueDate = issueDate ?? DateTime.Today;
         invoice.DueDate = invoice.IssueDate.AddDays(30);
-        invoice.CaeNumber = "74125896301236";
-        invoice.CaeDueDate = DateTime.Today.AddDays(15);
+        
+        if (invoice.IsAfipEnabled)
+        {
+            invoice.CaeNumber = "74125896301236";
+            invoice.CaeDueDate = DateTime.Today.AddDays(15);
+        }
+        else
+        {
+            invoice.CaeNumber = string.Empty;
+            invoice.CaeDueDate = DateTime.MinValue;
+        }
 
         try
         {
