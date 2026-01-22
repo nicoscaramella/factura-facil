@@ -73,11 +73,29 @@
     <script type="module">
         logProgress('Importando motor Blazor WebAssembly...');
         try {
-            await import('./_framework/blazor.webassembly.js');
-            logProgress('Motor importado. Iniciando aplicación...');
+            const result = await import('./_framework/blazor.webassembly.js');
+            logProgress('Motor importado. Ejecutando arranque manual...');
+            
+            // En .NET 8/9/10, si se carga como módulo, a veces start no es default export.
+            // Pero window.Blazor se define globalmente como efecto secundario.
+            if (window.Blazor && typeof window.Blazor.start === 'function') {
+                await window.Blazor.start();
+                logProgress('Aplicación iniciada exitosamente.');
+            } else if (result && typeof result.start === 'function') {
+                await result.start();
+                logProgress('Aplicación iniciada via export.');
+            } else {
+                throw new Error("No se encontró la función start() en window.Blazor ni en el módulo exportado.");
+            }
+
         } catch (e) {
-            logProgress('FALLO al importar Blazor: ' + e);
-            throw e;
+            logProgress('FALLO CRÍTICO al iniciar: ' + e);
+            console.error(e);
+            const errorUi = document.getElementById('blazor-error-ui');
+            if (errorUi) {
+                errorUi.style.display = 'block';
+                errorUi.innerText = 'Error fatal: ' + e;
+            }
         }
     </script>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
