@@ -33,26 +33,52 @@
     </div>
 
     <script>
-        // Global error handler to catch startup issues
+        function logProgress(message) {
+            console.log('[Setup] ' + message);
+            const el = document.querySelector('.loading-progress-text');
+            if (el) el.innerText = message;
+        }
+
+        logProgress('Inicializando entorno...');
+
         window.addEventListener('error', function(event) {
             console.error('Global Error:', event.error);
             const errorUi = document.getElementById('blazor-error-ui');
             if (errorUi) {
                 errorUi.style.display = 'block';
-                errorUi.innerText = 'Error de inicio: ' + (event.error?.message || event.message || 'Error desconocido');
+                errorUi.innerText = 'Error Crítico: ' + (event.error?.message || event.message || 'Error desconocido');
             }
+            logProgress('DETENIDO: Error crítico detectado.');
         });
+
         window.addEventListener('unhandledrejection', function(event) {
             console.error('Unhandled Rejection:', event.reason);
-             const errorUi = document.getElementById('blazor-error-ui');
+            const errorUi = document.getElementById('blazor-error-ui');
             if (errorUi) {
                 errorUi.style.display = 'block';
-                errorUi.innerText = 'Error de promesa: ' + (event.reason?.message || event.reason || 'Rechazo desconocido');
+                errorUi.innerText = 'Error Promesa: ' + (event.reason?.message || event.reason || 'Rechazo desconocido');
             }
+             logProgress('DETENIDO: Promesa rechazada.');
         });
+
+        // Configuración de Blazor para interceptar la carga
+        window.Blazor = {
+            loadBootResource: function (type, name, defaultUri, integrity) {
+                logProgress(`Cargando: ${name} (${type})...`);
+                // Retornar la URI por defecto permite que la carga continúe
+                return defaultUri;
+            }
+        };
     </script>
     <script type="module">
-        import './_framework/blazor.webassembly.js';
+        logProgress('Importando motor Blazor WebAssembly...');
+        try {
+            await import('./_framework/blazor.webassembly.js');
+            logProgress('Motor importado. Iniciando aplicación...');
+        } catch (e) {
+            logProgress('FALLO al importar Blazor: ' + e);
+            throw e;
+        }
     </script>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
     <script>
