@@ -1,14 +1,14 @@
 services:
-  # Servicio del Backend (API - Azure Functions)
+  # Servicio del Backend (API - ASP.NET Core)
   api:
     build:
       context: .
       dockerfile: Dockerfile
     restart: always
     environment:
-      - AzureWebJobsScriptRoot=/home/site/wwwroot
-      - AzureFunctionsJobHost__Logging__Console__IsEnabled=true
-      - AzureWebJobsStorage=UseDevelopmentStorage=true  # IMPORTANTE: Requerido para que arranque
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "7100:8080" # Mapeo host:contenedor
 
   # Servicio del Frontend (Blazor + Nginx)
   web:
@@ -17,6 +17,6 @@ services:
       dockerfile: FacturaFacil.UI/Dockerfile
     restart: always
     ports:
-      - "81:81"
+      - "5080:80" # Mapeo host:contenedor
     depends_on:
       - api
