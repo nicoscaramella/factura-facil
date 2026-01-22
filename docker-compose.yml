@@ -17,6 +17,6 @@ services:
       dockerfile: FacturaFacil.UI/Dockerfile
     restart: always
     ports:
-      - "80:80"
+      - "80:81"
     depends_on:
       - api
