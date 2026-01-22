@@ -19,9 +19,17 @@ public class GenerateInvoiceFunction
     [Function("GenerateInvoice")]
     public async Task<HttpResponseData> Run(
         [HttpTrigger(
-            AuthorizationLevel.Function, "post", Route = "invoices")]
+            AuthorizationLevel.Function, "post", "get", Route = "invoices")]
         HttpRequestData req)
     {
+        // Diagnóstico: Permitir GET para verificar conectividad
+        if (req.Method.Equals("GET", StringComparison.OrdinalIgnoreCase))
+        {
+            var pingResponse = req.CreateResponse(HttpStatusCode.OK);
+            await pingResponse.WriteStringAsync("API Online: Conectividad exitosa.");
+            return pingResponse;
+        }
+
         var invoiceData = await req.ReadFromJsonAsync<InvoiceModel>();
         if (invoiceData == null)
         {
