@@ -37,8 +37,10 @@ public class InvoiceDocument : IDocument
 
             page.Content().PaddingVertical(1, Unit.Centimetre).Column(col =>
             {
+                var buyerTaxId = string.IsNullOrWhiteSpace(_invoiceRequest.Buyer.TaxId) ? "Consumidor Final" : _invoiceRequest.Buyer.TaxId;
+                
                 col.Item().Text($"Vendedor: {_invoiceRequest.Seller.Name} | CUIT: {_invoiceRequest.Seller.TaxId}");
-                col.Item().Text($"Cliente: {_invoiceRequest.Buyer.Name} | CUIT: {_invoiceRequest.Buyer.TaxId}");
+                col.Item().Text($"Cliente: {_invoiceRequest.Buyer.Name} | CUIT: {buyerTaxId}");
                 col.Item().PaddingTop(10).LineHorizontal(1);
 
                 // Tabla de ítems

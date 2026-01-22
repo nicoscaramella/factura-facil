@@ -5,6 +5,11 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+    
+    <!-- Optimizaciones de Peso -->
+    <PublishTrimmed>true</PublishTrimmed> <!-- Elimina código no usado -->
+    <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport> <!-- Ahorra ~200KB si no usas zonas horarias complejas -->
+    <InvariantGlobalization>true</InvariantGlobalization> <!-- Opcional: Si solo usas formatos estándar, ahorra mucho peso -->
   </PropertyGroup>
 
   <ItemGroup>
