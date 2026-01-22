@@ -13,8 +13,8 @@ RUN dotnet restore "FacturaFacil.UI/FacturaFacil.UI.csproj"
 COPY . .
 WORKDIR "/src/FacturaFacil.UI"
 
-# Publicar (Desactivando compresión para evitar problemas con Nginx)
-RUN dotnet publish "FacturaFacil.UI.csproj" -c Release -o /app/publish /p:BlazorEnableCompression=false
+# Publicar (Con compresión activada por defecto para reducir tamaño)
+RUN dotnet publish "FacturaFacil.UI.csproj" -c Release -o /app/publish
 
 # Etapa 2: Servidor Nginx
 FROM nginx:alpine
