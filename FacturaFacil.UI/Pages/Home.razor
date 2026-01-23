@@ -44,7 +44,7 @@
                             <MudTextField T="string" Label="Nombre" @bind-Value="invoice.Seller.Name" Required="true" Placeholder="Ej: Mi Empresa S.A." />
                         </MudItem>
                         <MudItem xs="6">
-                            <MudTextField T="string" Label="CUIT" @bind-Value="invoice.Seller.TaxId" Required="true" Placeholder="Ej: 30-12345678-9" />
+                            <MudTextField T="string" Label="CUIT" @bind-Value="invoice.Seller.TaxId" Required="true" Placeholder="Ej: 30123456789" MaxLength="11" HelperText="Solo 11 números" />
                         </MudItem>
                         <MudItem xs="12">
                             <MudTextField T="string" Label="Dirección" @bind-Value="invoice.Seller.Address" Placeholder="Ej: Calle Falsa 123" />
@@ -57,7 +57,7 @@
                             <MudTextField T="string" Label="Nombre" @bind-Value="invoice.Buyer.Name" Required="true" />
                         </MudItem>
                         <MudItem xs="6">
-                            <MudTextField T="string" Label="CUIT" @bind-Value="invoice.Buyer.TaxId" />
+                            <MudTextField T="string" Label="CUIT" @bind-Value="invoice.Buyer.TaxId" MaxLength="11" HelperText="Solo 11 números" />
                         </MudItem>
                         <MudItem xs="12">
                             <MudTextField T="string" Label="Dirección" @bind-Value="invoice.Buyer.Address" />
@@ -72,16 +72,16 @@
 
                         @foreach (var item in invoice.Item)
                         {
-                            <MudItem xs="6">
+                            <MudItem xs="12" md="6">
                                 <MudTextField T="string" Label="Descripción" @bind-Value="item.Description" Required="true" />
                             </MudItem>
-                            <MudItem xs="2">
+                            <MudItem xs="4" md="2">
                                 <MudNumericField T="int" Label="Cant" @bind-Value="item.Quantity" Required="true" />
                             </MudItem>
-                            <MudItem xs="3">
+                            <MudItem xs="6" md="3">
                                 <MudNumericField T="decimal" Label="Precio" @bind-Value="item.UnitPrice" Required="true" />
                             </MudItem>
-                            <MudItem xs="1" Class="d-flex align-center">
+                            <MudItem xs="2" md="1" Class="d-flex align-center">
                                 <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => RemoveItem(item))" Disabled="@(invoice.Item.Count <= 1)" />
                             </MudItem>
                         }
