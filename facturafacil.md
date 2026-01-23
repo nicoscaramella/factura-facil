@@ -1,5 +1,18 @@
 # FacturaFacil - Resumen de Progreso
 
+## Estado del Proyecto (23/01/2026)
+Se implementó la lógica fiscal detallada para el cálculo de IVA en facturas A y B, mejorando la precisión del sistema y su cumplimiento normativo.
+
+### Cambios Realizados Hoy:
+1.  **Cálculo de Impuestos (IVA):**
+    *   **Factura A:** Lógica para discriminar el IVA (21%) en el PDF (Subtotal + IVA = Total).
+    *   **Factura B:** Lógica para incluir el IVA en el precio unitario sin discriminarlo visualmente, pero calculándolo en el total.
+    *   **Interfaz:** Nuevo interruptor "Agregar IVA (21%)" en `Home.razor`, habilitado dinámicamente para facturas A y B.
+2.  **Corrección de Errores:**
+    *   Solucionado bug crítico en el selector de "Tipo de Factura" (binding de `MudSelect`) que impedía el correcto funcionamiento de eventos al cambiar de tipo.
+3.  **Generación de QR:**
+    *   Actualizado el algoritmo del código QR para incluir el monto del IVA en el campo `importe` final, asegurando validez ante AFIP.
+
 ## Estado del Proyecto (22/01/2026)
 Se ha realizado una reestructuración completa de la arquitectura para facilitar el despliegue en VPS y se han aplicado optimizaciones críticas de rendimiento.
 
