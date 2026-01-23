@@ -6,6 +6,7 @@ public class InvoiceModel
     public int PointOfSale { get; set; }
     public int InvoiceType { get; set; }
     public bool IsAfipEnabled { get; set; } = true;
+    public bool IncludeVat { get; set; } = true;
     public DateTime IssueDate { get; set; }
     public DateTime DueDate { get; set; }
     public string CaeNumber { get; set; } = string.Empty;

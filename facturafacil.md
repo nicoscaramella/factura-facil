@@ -1,29 +1,42 @@
 # FacturaFacil - Resumen de Progreso
 
-## Estado del Proyecto (21/01/2026)
-Se completó la integración del Frontend con el Backend y se implementó la generación del QR de AFIP.
+## Estado del Proyecto (22/01/2026)
+Se ha realizado una reestructuración completa de la arquitectura para facilitar el despliegue en VPS y se han aplicado optimizaciones críticas de rendimiento.
 
 ### Cambios Realizados Hoy:
-1.  **Backend (API):**
-    *   **CORS:** Se habilitó CORS en `local.settings.json` para permitir peticiones desde `http://localhost:5080`.
-    *   **Modelo de Datos:** Se agregaron `PointOfSale` e `InvoiceType` al `InvoiceModel` para mayor flexibilidad.
-2.  **Frontend (Blazor WASM):**
-    *   **Formulario Dinámico:** Se implementó un formulario completo en `Home.razor` usando MudBlazor, permitiendo editar datos del vendedor, comprador e ítems (con opción de agregar/quitar filas).
-    *   **Integración API:** Se configuró la llamada POST a la Azure Function y la visualización del PDF resultante en un `iframe` integrado en la UI.
-3.  **Generación de PDF (`InvoiceDocument.cs`):**
-    *   **QR de AFIP:** Se integró la generación de códigos QR legales siguiendo las especificaciones de AFIP (URL con JSON en Base64).
-    *   **Librerías:** Se agregaron `Net.Codecrete.QrCodeGenerator`, `SixLabors.ImageSharp` y `SixLabors.ImageSharp.Drawing` para manejar la creación del QR.
-    *   **Diseño:** Se mejoró el encabezado para mostrar la letra de la factura (A, B o C) y el punto de venta.
+
+1.  **Arquitectura del Backend:**
+    *   **Migración:** Se eliminó la dependencia de Azure Functions y se migró a una **ASP.NET Core Web API** estándar en .NET 10.
+    *   **Controladores:** Implementación de `InvoicesController` para la generación de PDFs.
+    *   **Licencia:** Configuración global de la licencia Community de QuestPDF.
+
+2.  **Optimización de Rendimiento (Frontend):**
+    *   **Peso del Bundle:** Se activó el **Trimming** (recorte de código no usado) y la **Globalización Invariante** para reducir drásticamente el tamaño de los archivos WASM.
+    *   **Compresión:** Configuración de **Gzip/Brotli** en el Dockerfile de la UI y en Nginx para acelerar la carga inicial.
+    *   **Limpieza:** Eliminación de Bootstrap CSS y fuentes externas bloqueantes, delegando todo el diseño a MudBlazor.
+
+3.  **Mejoras en la Experiencia de Usuario (UX/UI):**
+    *   **Pantalla de Carga:** Nueva interfaz de inicio con spinner centrado y branding de "Factura Fácil".
+    *   **Identidad:** Actualización del título de la pestaña y cambio de favicon por un emoji de hoja (🍃) mediante SVG.
+    *   **Donaciones:** Corrección del enlace a MercadoPago y personalización del botón con icono de corazón.
+
+4.  **Funcionalidades del Negocio:**
+    *   **Modo No Fiscal:** Opción para generar presupuestos (Letra "X", sin QR de ARCA/AFIP, sin CAE).
+    *   **Flexibilidad:** El CUIT del comprador ahora es opcional; si se deja vacío, el PDF muestra automáticamente "Consumidor Final".
+
+5.  **Despliegue y Docker:**
+    *   **Docker Compose:** Configuración robusta con Nginx como proxy inverso para manejar el tráfico del Frontend y la API en una sola red.
+    *   **Coolify:** Preparación total para despliegue en VPS mediante Git.
 
 ### Pruebas Realizadas:
-*   La solución compila sin errores ni advertencias.
-*   Se verificó la lógica de generación del QR y el formato de la URL de AFIP.
-*   El formulario de Blazor valida los campos obligatorios antes de permitir la generación.
+*   Compilación exitosa de toda la solución (`dotnet build`).
+*   Verificación de la carga optimizada en entorno local Docker.
+*   Prueba de generación de PDF tanto en modo Fiscal como Presupuesto.
 
 ### Pendientes:
-*   Implementar validaciones de CUIT (algoritmo de verificación).
-*   Agregar persistencia opcional (guardar borradores de facturas).
-*   Mejorar el diseño visual del PDF (colores, logo de la empresa).
+*   Implementar persistencia de borradores (LocalStorage o Base de Datos).
+*   Validación de algoritmos de CUIT (opcional, para evitar errores de carga).
+*   Personalización de logos de empresa en el encabezado.
 
 ---
-**Nota:** Para ejecutar el proyecto, iniciar la API en el puerto 7100 y el UI en el 5080.
+**Nota:** El proyecto ahora es totalmente compatible con entornos Linux estándar y despliegues tipo Coolify/Portainer.

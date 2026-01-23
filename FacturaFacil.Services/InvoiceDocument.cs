@@ -64,11 +64,41 @@ public class InvoiceDocument : IDocument
 
                     foreach (var item in _invoiceRequest.Item)
                     {
+                        // Para Factura B (6) si se incluye IVA, el precio unitario visible incluye el impuesto.
+                        // Para Factura A (1) o C (11), se muestra el neto.
+                        decimal displayPrice = item.UnitPrice;
+                        if (_invoiceRequest.InvoiceType == 6 && _invoiceRequest.IncludeVat)
+                        {
+                            displayPrice *= 1.21m;
+                        }
+
                         table.Cell().Text(item.Description);
                         table.Cell().AlignRight().Text(item.Quantity.ToString());
-                        table.Cell().AlignRight().Text($"${item.UnitPrice:N2}");
-                        table.Cell().AlignRight().Text($"${(item.Quantity * item.UnitPrice):N2}");
+                        table.Cell().AlignRight().Text($"${displayPrice:N2}");
+                        table.Cell().AlignRight().Text($"${(item.Quantity * displayPrice):N2}");
                     }
+                });
+
+                // Totales
+                var subtotal = _invoiceRequest.Item.Sum(i => i.Quantity * i.UnitPrice);
+                decimal total = subtotal;
+                
+                col.Item().PaddingTop(10).AlignRight().Column(c => 
+                {
+                    if (_invoiceRequest.InvoiceType == 1 && _invoiceRequest.IncludeVat) // Factura A
+                    {
+                        var vatAmount = subtotal * 0.21m;
+                        total += vatAmount;
+                        
+                        c.Item().Text($"Subtotal: ${subtotal:N2}");
+                        c.Item().Text($"IVA (21%): ${vatAmount:N2}");
+                    }
+                    else if (_invoiceRequest.InvoiceType == 6 && _invoiceRequest.IncludeVat) // Factura B
+                    {
+                        total *= 1.21m;
+                    }
+                    
+                    c.Item().Text($"Total: ${total:N2}").Bold().FontSize(14);
                 });
             });
 
@@ -124,7 +154,9 @@ public class InvoiceDocument : IDocument
             ptoVta = _invoiceRequest.PointOfSale,
             tipoCmp = _invoiceRequest.InvoiceType,
             nroCmp = _invoiceRequest.InvoiceNumber,
-            importe = _invoiceRequest.Item.Sum(i => i.Quantity * i.UnitPrice),
+            importe = ((_invoiceRequest.InvoiceType == 1 || _invoiceRequest.InvoiceType == 6) && _invoiceRequest.IncludeVat)
+                ? _invoiceRequest.Item.Sum(i => i.Quantity * i.UnitPrice) * 1.21m 
+                : _invoiceRequest.Item.Sum(i => i.Quantity * i.UnitPrice),
             moneda = "PES",
             ctz = 1,
             tipoDocRec = 99,

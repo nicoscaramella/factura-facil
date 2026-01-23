@@ -25,13 +25,16 @@
                         </MudItem>
                         <MudItem xs="4">
                             <MudSelect T="int" Label="Tipo" @bind-Value="invoice.InvoiceType" Required="true">
-                                <MudSelectItem Value="11">Factura C</MudSelectItem>
-                                <MudSelectItem Value="1">Factura A</MudSelectItem>
-                                <MudSelectItem Value="6">Factura B</MudSelectItem>
+                                <MudSelectItem Value="@(11)">Factura C</MudSelectItem>
+                                <MudSelectItem Value="@(1)">Factura A</MudSelectItem>
+                                <MudSelectItem Value="@(6)">Factura B</MudSelectItem>
                             </MudSelect>
                         </MudItem>
-                        <MudItem xs="12">
+                        <MudItem xs="6">
                             <MudDatePicker Label="Fecha de Emisión" @bind-Date="issueDate" />
+                        </MudItem>
+                        <MudItem xs="6" Class="d-flex align-center">
+                            <MudSwitch @bind-Value="invoice.IncludeVat" Label="Agregar IVA (21%)" Color="Color.Primary" Disabled="@(invoice.InvoiceType != 1 && invoice.InvoiceType != 6)" />
                         </MudItem>
                         
                         <MudItem xs="12">
